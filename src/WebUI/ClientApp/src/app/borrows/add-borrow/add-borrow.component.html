@@ -15,7 +15,7 @@ class="form fv-plugins-bootstrap5 fv-plugins-framework">
         <div class="row">            
             <ng-container *ngIf="!isAddBorrower">
                 <div class="col-10 mb-3">
-                    <label for="borrowerId" class="form-label">اسم الستعير</label>
+                    <label for="borrowerId" class="form-label">اسم المستعير</label>
                     <ng-select [items]="lookupBorrower" bindLabel="title" bindValue="id"
                     name="borrowerId" [(ngModel)]="borrowBook.borrowerId">
                     </ng-select>
