@@ -1,0 +1,58 @@
+<yan-toolbar title="مجموعة الصلاحيات">
+   <!--begin::Primary button-->
+   <button class="btn btn-sm fw-bold btn-primary" (click)="create()">جديد</button>
+   <!--end::Primary button-->
+  <!--begin::Search-->
+  <div class="d-flex align-items-center position-relative my-1">
+    <i class="ki-duotone ki-magnifier fs-3 position-absolute ms-5" (click)="loadSearch()"><span class="path1"></span><span class="path2"></span></i> 
+    <input type="text" data-kt-user-table-filter="search" [(ngModel)]="search"  class="form-control form-control-solid w-250px ps-13" placeholder="بحث">
+</div>
+  <!--end::Search--> 
+</yan-toolbar>
+<div class="card mb-5">
+  <!-- begin::Body -->
+  <div class="card-body py-3">
+    <!-- begin::Table container -->
+    <div class="table-responsive">
+      <!-- begin::Table -->
+      <table class="table align-middle gs-0 gy-4">
+        <!-- begin::Table head -->
+        <thead>
+          <tr class="fw-bolder text-muted bg-light">
+            <th class="ps-4 min-w-325px rounded-start">الاسم</th>
+            <th class="min-w-200px text-end rounded-end"></th>
+          </tr>
+        </thead>
+        <!-- end::Table head -->
+        <!-- begin::Table body -->
+        <tbody *ngIf="page&&page.totalCount; else notFind" class="text-gray-600 fw-semibold">
+          <tr *ngFor="let item of page?.data">
+            <td><a routerLink="/identity/Groups/details/{{ item.id }}">{{ item.name }}</a></td>
+            <td class="text-end">
+              <button class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1" (click)="edit(item)">
+                <app-keenicon name="pencil" class="fs-3"></app-keenicon>
+              </button>
+              <button (click)="delete(item.id)" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm">
+                <app-keenicon name="trash" class="fs-3"></app-keenicon>
+              </button>
+            </td>          
+          </tr>         
+        </tbody>
+        <ng-template #notFind >
+          <tbody class="text-gray-600 fw-semibold">
+          <tr class="odd"><td valign="top" colspan="2" class="dataTables_empty">لم يتم العثور على سجلات مطابقة</td></tr>
+        </tbody> 
+        </ng-template>
+        <!-- end::Table body -->
+      </table>
+      <!-- end::Table -->
+    </div>
+    <!-- end::Table container -->
+  </div>
+  <!-- begin::Body -->
+
+</div>
+<div *ngIf="page&&page.totalCount">
+  <ycr-pagination [totalCount]="page.totalCount" [numberPage]="pageNumber" [pageSize]="pageSize"
+    (page)="changeNumberPage($event)" (size)="changePageSize($event)"></ycr-pagination>
+</div>

@@ -1,0 +1,68 @@
+<div class="d-flex justify-content-between pt-10">  
+    <div class="fs-6 fw-bold " >{{ totalCount}} عنصر</div>
+       <ul class="pagination">
+        <li class="page-item" [class.disabled]="numberPage <=1">
+          <a class="page-link"  aria-label="Previous" (click)="setPage(numberPage-1)">
+            <span aria-hidden="true">&laquo;</span>
+          </a>
+        </li>
+       
+      <li class="page-item"  [class.active]="numberPage==1">
+        <a class="page-link" (click)="setPage(1)">1</a>
+      </li>
+      <li class="page-item" *ngIf="numberPage!=1 && numberPage!=totalPages">
+        <a class="page-link" href="#">{{ numberPage }}</a>
+      </li>
+      <li class="page-item disabled" *ngIf="totalPages!=1">
+        <a class="page-link"> ... </a>
+      </li>
+      <li class="page-item" [class.active]="numberPage==totalPages" *ngIf="totalPages!=1">
+        <a class="page-link" (click)="setPage(totalPages)"> {{ totalPages }}</a>
+      </li>
+      <li class="page-item" [class.disabled]="numberPage >= totalPages">
+        <a class="page-link"  aria-label="Next" (click)="setPage(numberPage+1)">
+          <span aria-hidden="true">&raquo;</span>
+        </a>
+      </li>
+      
+    </ul>
+    <!-- <ul class="pagination">      
+      <li class="page-item previous " >
+        <a class="page-link cursor-pointer" >
+          <i class="previous"></i>
+        </a>
+      </li> 
+      <li class="page-item" [class.active]="numberPage==1">
+        <a class="page-link cursor-pointer" (click)="setPage(1)"> 1</a>
+      </li>
+      <li class="page-item active" *ngIf="numberPage!=1 && numberPage!=totalPages">
+        <a class="page-link cursor-pointer"> {{ numberPage }}</a>
+      </li>  
+      <li class="page-item disabled" *ngIf="totalPages!=1">
+        <a class="page-link cursor-pointer"> ... </a>
+      </li>  
+      <li class="page-item" [class.active]="numberPage==totalPages" *ngIf="totalPages!=1">
+        <a class="page-link cursor-pointer"  (click)="setPage(totalPages)"> {{ totalPages }} </a>
+      </li>     
+      <li class="page-item next" [class.disabled]="numberPage >= totalPages">
+        <a class="page-link cursor-pointer" (click)="setPage(numberPage+1)" >
+          <i class="next"></i>
+        </a>
+      </li>
+    </ul> -->
+    <div class="me-4">
+      <select  [(ngModel)]="pageSize" (change)="setPageSize($event)"
+        name="status"
+        data-control="select2"
+        data-hide-search="true"
+        class="form-select form-select-sm form-select-white "
+        defaultValue="2"
+      >
+      <option value="2">2</option>
+      <option value="10">10</option>
+      <option value="25">25</option>
+      <option value="50">50</option>
+      <option value="100">100</option>
+       </select>
+    </div>
+  </div>

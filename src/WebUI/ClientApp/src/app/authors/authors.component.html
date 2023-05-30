@@ -1,0 +1,136 @@
+<div class="clearfix">
+  <h1 class="float-start">المؤلفون</h1>
+  <button class="btn btn-primary float-end" 
+        (click)="showNewAuthorModal(newAuthorModalTemplate)">جديد 
+        <i class="bi bi-journal-plus"></i> 
+      </button>   
+</div>
+
+<p *ngIf="!authors"><em>تحميل...</em></p>
+<div *ngIf="authors">
+  <table class='table table-striped' aria-labelledby="tableLabel" >
+      <thead>
+        <tr>
+          <th>الاسم</th>
+          <th>العنوان</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let author of authors.items">
+          <td>{{ author.name }}</td>
+          <td>{{ author.address }}</td>
+          <td><button id="AuthorOptions" class="btn btn-default float-end" 
+            (click)="showAuthorOptionsModal(author,AuthorOptionsModalTemplate)">
+            <i class="bi bi-three-dots-vertical"></i>
+          </button></td>
+        </tr>
+      </tbody>
+    </table>
+  <div *ngIf="authors.totalCount">
+      <ycr-pagination [totalCount]="authors.totalCount" [numberPage]="pageNumber" [pageSize]="pageSize"
+        (page)="changeNumberPage($event)" (size)="changePageSize($event)"></ycr-pagination>
+    </div>
+</div>
+
+<ng-template #newAuthorModalTemplate>
+  <div class="modal-header ">
+      <h4 class="modal-title float-end">مؤلف جديد</h4>
+      <div>
+          <button type="button" class="close btn-close float-start" aria-label="Close" (click)="Cancelled(true)">
+            <span aria-hidden="true" class="visually-hidden">&times;</span>
+          </button>
+      </div>      
+  </div>
+  <div class="modal-body">
+    <div class="mb-3">
+      <label for="name" class="form-label">الاسم</label>
+      <input type="text" class="form-control" id="name" placeholder="الاسم..." [(ngModel)]="newAuthorEditor.name"
+      [ngClass]="{ 'is-invalid': newAuthorEditor.error&&newAuthorEditor.error.name }" (keyup.enter)="addAuthor()" />
+    <div *ngIf="newAuthorEditor.error&&newAuthorEditor.error.name" class="invalid-feedback">
+      {{ newAuthorEditor.error.name }}
+    </div>  
+    </div>   
+    <div class="mb-3">
+      <label for="address" class="form-label">العنوان </label>
+      <input type="text" class="form-control" id="address" placeholder="العنوان..." [(ngModel)]="newAuthorEditor.address"
+        [ngClass]="{ 'is-invalid': newAuthorEditor.error&&newAuthorEditor.error.address }" (keyup.enter)="addAuthor()" />
+      <div *ngIf="newAuthorEditor.error&&newAuthorEditor.error.address" class="invalid-feedback">
+        {{ newAuthorEditor.error.address }}
+      </div>
+    </div>
+    <div *ngIf="debug">
+      <pre>{{ newAuthorEditor | json }}</pre>
+    </div>
+  </div>
+  <div class="modal-footer clearfix">
+    <div class="float-end">
+      <button class="btn btn-primary" (click)="addAuthor()">إضافة</button>
+      <button class="btn btn-default" (click)="Cancelled(true)">الغاء</button>
+    </div>
+  </div>
+</ng-template>
+<ng-template #AuthorOptionsModalTemplate>
+  <div class="modal-header">
+    <h4 class="modal-title pull-left">تعديل مؤلف</h4>
+    <button type="button" class="close btn-close pull-right" aria-label="Close" (click)="Cancelled(false) ">
+      <span aria-hidden="true" class="visually-hidden">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="mb-3">
+      <label for="inputName" class="form-label">الاسم</label>
+      <input type="text" class="form-control" id="inputName" placeholder="الاسم..."
+        [(ngModel)]="AuthorOptionsEditor.name" 
+        [ngClass]="{ 'is-invalid': AuthorOptionsEditor.error&&AuthorOptionsEditor.error.name }" (keyup.enter)="updateAuthorOptions()" />
+        <div *ngIf="AuthorOptionsEditor.error&&AuthorOptionsEditor.error.name" class="invalid-feedback">
+          {{ AuthorOptionsEditor.error&&AuthorOptionsEditor.error.name }}
+        </div>
+    </div>
+    <div class="mb-3">
+      <label for="inputAddress" class="form-label">العنوان</label>
+      <input type="text" class="form-control" id="inputAddress" placeholder="العنوان.."
+        [(ngModel)]="AuthorOptionsEditor.address" 
+        [ngClass]="{ 'is-invalid': AuthorOptionsEditor.error&&AuthorOptionsEditor.error.address }" (keyup.enter)="updateAuthorOptions()" />
+        <div *ngIf="AuthorOptionsEditor.error&&AuthorOptionsEditor.error.address" class="invalid-feedback">
+          {{ AuthorOptionsEditor.error&&AuthorOptionsEditor.error.address }}
+        </div>
+    </div>
+    <div *ngIf="debug">
+      <pre>{{ AuthorOptionsEditor | json }}</pre>
+    </div>
+  </div>
+  <div class="modal-footer justify-content-between">
+    <div class="float-start">
+      <button class="btn btn-default text-danger" (click)="confirmDeleteAuthor(deleteAuthorModalTemplate)">حذف</button>
+    </div> 
+    <div class="clearfix">       
+      <div class="float-end">
+        <button class="btn btn-primary" (click)="updateAuthorOptions()">تعديل</button>
+        <button class="btn btn-default" (click)="Cancelled(false)">الغاء</button>
+      </div>
+           
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #deleteAuthorModalTemplate>
+  <div class="modal-header">
+    <h4 class="modal-title pull-left">حذف "{{ selectedAuthor?.name }}" ؟</h4>
+    <button type="button" class="close btn-close pull-right" aria-label="Close" (click)="deleteAuthorModalRef.hide()">
+      <span aria-hidden="true" class="visually-hidden">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <p>سيتم حذف العناصر بشكل دائم. </p>
+    <div *ngIf="debug">
+      <pre>{{ selectedAuthor | json }}</pre>
+    </div>
+  </div>
+  <div class="modal-footer clearfix">
+    <div class="float-end">
+      <button type="button" class="btn btn-danger" (click)="deleteAuthorConfirmed()">حذف</button>
+      <button type="button" class="btn btn-default" (click)="deleteAuthorModalRef.hide()">الغاء</button>
+    </div>
+  </div>
+</ng-template>

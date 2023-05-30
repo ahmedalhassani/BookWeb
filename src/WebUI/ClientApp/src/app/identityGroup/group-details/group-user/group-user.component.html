@@ -1,0 +1,62 @@
+ <!--begin::Tab pane-->
+ <div class="tab-pane active" id="tab_users" role="tabpanel">
+  <ng-template #formError let-control="control" let-message="message" let-validation="validation">
+    <ng-container *ngIf="control.hasError(validation) && (control.dirty || control.touched)">
+      <div class="fv-plugins-message-container">
+        <span role="alert">
+          {{ message }}
+        </span>
+      </div>
+    </ng-container>
+    </ng-template>
+  <form class="form w-100" [formGroup]="loginForm" novalidate="novalidate" id="kt_login_signin_form"
+(ngSubmit)="submit()">
+    <label class="fs-6 fw-semibold form-label">إضافة مستخدم</label>
+    <div class="input-group">
+        <select name="userId" formControlName="userId" class="form-select form-select-solid "
+        [ngClass]="{
+          'is-invalid': loginForm.controls['userId'].invalid,
+          'is-valid': loginForm.controls['userId'].valid
+        }">
+         <option value="">اختار من القائمة</option>
+          <option *ngFor="let item of lookupUser" value="{{item.id}}">{{item.title}}</option>
+          </select>  
+        <button type="submit" class="btn btn-icon btn-light"  [disabled]="loginForm.invalid">
+            <ng-container *ngIf="this.layoutUtilsService.isLoading | async">
+              <span class="indicator-progress" [style.display]="'block'">
+                <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+              </span>
+            </ng-container>
+            <ng-container *ngIf="(this.layoutUtilsService.isLoading | async) === false">
+              <i class="ki-duotone ki-plus-square fs-2"><span class="path1"></span><span class="path2"></span><span class="path3"></span></i> 
+            </ng-container>
+          </button>
+    </div>
+  </form>
+    <div class="separator my-7"></div>
+    <!-- begin::Table -->
+<table class="table align-middle gs-0 gy-4" >
+<!-- begin::Table head -->
+<thead>
+  <tr class="fw-bolder text-muted bg-light">
+    <th class="ps-4 min-w-325px rounded-start">الاسم</th>
+    <th class="min-w-200px text-end rounded-end"></th>
+  </tr>
+</thead>
+<!-- end::Table head -->
+<!-- begin::Table body -->
+<tbody *ngIf="model">
+  <tr *ngFor="let item of model">
+    <td>{{ item.name }}</td>
+    <td class="text-end">
+      <button (click)="delete(item.id)" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm">
+        <app-keenicon name="trash" class="fs-3"></app-keenicon>
+      </button>
+    </td>
+  </tr>
+</tbody>
+<!-- end::Table body -->
+</table>
+<!-- end::Table -->
+</div>
+<!--end::Tab pane-->

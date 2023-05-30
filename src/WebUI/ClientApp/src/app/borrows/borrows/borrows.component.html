@@ -1,0 +1,190 @@
+<div class="clearfix">
+  <h1 class="float-start">الاستعارة</h1>
+  <button class="btn btn-primary float-end"
+        (click)="showNewBorrowModal()">إستعارة 
+        <i class="bi bi-journal-plus"></i> 
+      </button>   
+</div>
+
+<p *ngIf="!borrows"><em>تحميل...</em></p>
+<div *ngIf="borrows">
+  <div class="card mb-1">
+    <div class="card-body row">
+      <div class="col-md-4">
+        <label for="bookId" class="form-label">اسم الكتاب</label>
+        <ng-select name="bookId" [items]="lookupBook" 
+        bindLabel="title" 
+        bindValue="id" 
+        [(ngModel)]="bookId" >
+</ng-select>
+      </div>
+      <div class="col-md-4">
+        <label for="borrowerId" class="form-label">إسم المستعير</label>
+        <ng-select name="borrowerId" [items]="lookupBorrower" 
+        bindLabel="title" 
+        bindValue="id" 
+        [(ngModel)]="borrowerId" >
+</ng-select>
+      </div>
+      <div class="col-3">
+        <label for="created" class="form-label">تاريخ الاستعارة</label>
+        <input
+        class="form-control form-control-solid" name="created"
+        autocomplete="off"
+        #datepickerFull="bsDatepicker"
+        bsDatepicker      
+        [bsConfig]="{ dateInputFormat: 'DD/MM/YYYY' }"
+        [(ngModel)]="created" 
+        >
+      </div>
+      <div class="col-1">
+        <button  (click)="loadSearch()" style="margin-top: 32px;" class="btn btn-primary">بحث</button>
+      </div>
+    </div>
+  </div>
+ 
+  <table class='table table-striped' aria-labelledby="tableLabel" >
+      <thead>
+        <tr>
+          <th>اسم الكتاب</th>
+          <th>اسم المستعير</th>
+          <th>العنوان</th>
+          <th>التلفون</th>
+          <th>تاريخ الستعارة</th>
+          <th>المدة</th>
+          <th>السعر</th>
+          <th>إستلام</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let borrow of borrows.items">
+          <td>{{ borrow.book }}</td>
+          <td>{{ borrow.borrower.name }}</td>
+          <td>{{ borrow.borrower.address }}</td>
+          <td>{{ borrow.borrower.phone }}</td>
+          <td>{{ borrow.created | date:'mediumDate' }}</td>
+          <td>{{ borrow.duration }}</td>
+          <td>{{ borrow.price |currency:"EGP":"symbol" }}</td>
+          <td>
+            <button  class="btn btn-primary float-end" 
+            (click)="showReplayBorrowModal(borrow,replayBorrowModalTemplate)">
+            <i class="bi bi-credit-card"></i>
+          </button>
+        </td>
+          <td><button id="bookOptions" class="btn btn-default float-end" 
+            (click)="showborrowOptionsModal(borrow,replayBorrowModalTemplate)">
+            <i class="bi bi-three-dots-vertical"></i>
+          </button></td>
+        </tr>
+      </tbody>
+    </table>
+  <div *ngIf="borrows.totalCount">
+      <ycr-pagination [totalCount]="borrows.totalCount" [numberPage]="pageNumber" [pageSize]="pageSize"
+        (page)="changeNumberPage($event)" (size)="changePageSize($event)"></ycr-pagination>
+    </div>
+</div>
+
+<ng-template #replayBorrowModalTemplate>
+  <div class="modal-header">
+    <h4 class="modal-title pull-left">إستلام الكتاب</h4>
+    <button type="button" class="close btn-close pull-right" aria-label="Close" (click)="Cancelled() ">
+      <span aria-hidden="true" class="visually-hidden">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="mb-3">
+      <label for="replayDt" class="form-label">تاريخ الإعادة</label>
+      <input
+        class="form-control form-control-solid" name="replayDt"
+        autocomplete="off"
+        #datepickerFull="bsDatepicker"
+        bsDatepicker      
+        [bsConfig]="{ dateInputFormat: 'DD/MM/YYYY' }"
+        [(ngModel)]="borrowOptionsEditor.replayDt" 
+        [ngClass]="{ 'is-invalid': borrowOptionsEditor.error&&borrowOptionsEditor.error.replayDt }" (keyup.enter)="updateborrowOptions()" />
+        <div *ngIf="borrowOptionsEditor.error&&borrowOptionsEditor.error.replayDt" class="invalid-feedback">
+          {{ borrowOptionsEditor.error&&borrowOptionsEditor.error.replayDt }}
+        </div>
+    </div>   
+    
+    <div *ngIf="debug">
+      <pre>{{ borrowOptionsEditor | json }}</pre>
+    </div>
+  </div>
+  <div class="modal-footer justify-content-between">   
+    <div class="clearfix">       
+      <div class="float-end">
+        <button class="btn btn-primary" (click)="updateborrowOptions()">إستلام</button>
+        <button class="btn btn-default" (click)="Cancelled()">الغاء</button>
+      </div>
+           
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #borrowOptionsModalTemplate>
+  <div class="modal-header">
+    <h4 class="modal-title pull-left">تعديل إستعارة</h4>
+    <button type="button" class="close btn-close pull-right" aria-label="Close" (click)="Cancelled() ">
+      <span aria-hidden="true" class="visually-hidden">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="mb-3">
+      <label for="duration" class="form-label">مدة الإستعارة</label>
+      <input type="number" class="form-control" id="duration"
+        [(ngModel)]="borrowOptionsEditor.duration" 
+        [ngClass]="{ 'is-invalid': borrowOptionsEditor.error&&borrowOptionsEditor.error.duration }" (keyup.enter)="updateborrowOptions()" />
+        <div *ngIf="borrowOptionsEditor.error&&borrowOptionsEditor.error.duration" class="invalid-feedback">
+          {{ borrowOptionsEditor.error&&borrowOptionsEditor.error.duration }}
+        </div>
+    </div>
+    <div class="mb-3">
+      <label for="price" class="form-label">سعر الإستعارة</label>
+      <input type="number" class="form-control" id="price"
+        [(ngModel)]="borrowOptionsEditor.price" 
+        [ngClass]="{ 'is-invalid': borrowOptionsEditor.error&&borrowOptionsEditor.error.price }" (keyup.enter)="updateborrowOptions()" />
+        <div *ngIf="borrowOptionsEditor.error&&borrowOptionsEditor.error.price" class="invalid-feedback">
+          {{ borrowOptionsEditor.error&&borrowOptionsEditor.error.price }}
+        </div>
+    </div>
+    
+    <div *ngIf="debug">
+      <pre>{{ borrowOptionsEditor | json }}</pre>
+    </div>
+  </div>
+  <div class="modal-footer justify-content-between">
+    <div class="float-start">
+      <button class="btn btn-default text-danger" (click)="confirmDeleteborrow(deleteborrowModalTemplate)">حذف</button>
+    </div> 
+    <div class="clearfix">       
+      <div class="float-end">
+        <button class="btn btn-primary" (click)="updateborrowOptions()">تعديل</button>
+        <button class="btn btn-default" (click)="Cancelled()">الغاء</button>
+      </div>
+           
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #deleteborrowModalTemplate>
+  <div class="modal-header">
+    <h4 class="modal-title pull-left">حذف "{{ selectedborrow?.book }}" ؟</h4>
+    <button type="button" class="close btn-close pull-right" aria-label="Close" (click)="deleteborrowModalRef.hide()">
+      <span aria-hidden="true" class="visually-hidden">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <p>سيتم حذف العناصر بشكل دائم. </p>
+    <div *ngIf="debug">
+      <pre>{{ selectedborrow | json }}</pre>
+    </div>
+  </div>
+  <div class="modal-footer clearfix">
+    <div class="float-end">
+      <button type="button" class="btn btn-danger" (click)="deleteborrowConfirmed()">حذف</button>
+      <button type="button" class="btn btn-default" (click)="deleteborrowModalRef.hide()">الغاء</button>
+    </div>
+  </div>
+</ng-template>

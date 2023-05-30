@@ -1,0 +1,37 @@
+<yan-toolbar title="مجموعة صلاحية: {{identityGroup &&identityGroup.name}}"></yan-toolbar>
+<div class="card">
+    <!--begin::Header-->
+    <div class="card-header card-header-stretch overflow-auto">
+        <!--begin::Tabs-->
+        <ul ngbNav #nav="ngbNav" [(activeId)]="active" class="nav nav-stretch nav-line-tabs fw-semibold fs-6 border-transparent flex-nowrap fw-bold" role="tablist">
+            <li class="nav-item" role="presentation" [ngbNavItem]="1">
+                <a ngbNavLink class="nav-link text-active-primary py-5 me-6">
+                    المستخدمين </a>
+                    <ng-template ngbNavContent>
+                        <yid-group-user [model]="identityGroup&&identityGroup.users" [gId]="id"></yid-group-user>
+                   </ng-template>  
+            </li>
+            <li class="nav-item" role="presentation" [ngbNavItem]="2">
+                <a ngbNavLink class="nav-link text-active-primary py-5 me-6">
+                    الصلاحيات </a>
+                    <ng-template ngbNavContent>
+                        <yid-group-role [model]="identityGroup&&identityGroup.roles" [gId]="id"></yid-group-role>
+                   </ng-template> 
+            </li>
+            <li class="nav-item" role="presentation" [ngbNavItem]="3">
+                <a ngbNavLink class="nav-link text-active-primary py-5 me-6">
+                    الذونات </a>
+                    <ng-template ngbNavContent>
+                        <yid-group-permission [model]="identityGroup&&identityGroup.permissions" [gId]="id"></yid-group-permission>
+                   </ng-template> 
+            </li>
+        </ul>       
+        <!--end::Tabs-->
+    </div>
+    <!--end::Header-->
+<!--begin::Body-->
+<div class="card-body">
+    <div class="tab-content">
+        <div [ngbNavOutlet]="nav" class="mt-2"></div>     
+</div>
+<!--end::Body-->

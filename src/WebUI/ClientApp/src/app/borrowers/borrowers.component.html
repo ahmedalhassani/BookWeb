@@ -1,0 +1,155 @@
+<div class="clearfix">
+  <h1 class="float-start">المستعيرين</h1>
+  <button class="btn btn-primary float-end" 
+        (click)="showNewborrowerModal(newborrowerModalTemplate)">جديد 
+        <i class="bi bi-journal-plus"></i> 
+      </button>   
+</div>
+
+<p *ngIf="!borrowers"><em>تحميل...</em></p>
+<div *ngIf="borrowers">
+  <table class='table table-striped' aria-labelledby="tableLabel" >
+      <thead>
+        <tr>
+          <th>الاسم</th>
+          <th>العنوان</th>
+          <th>التلفون</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let borrower of borrowers.items">
+          <td>{{ borrower.name }}</td>
+          <td>{{ borrower.address }}</td>
+          <td>{{ borrower.phone }}</td>
+          <td><button id="borrowerOptions" class="btn btn-default float-end" 
+            (click)="showborrowerOptionsModal(borrower,borrowerOptionsModalTemplate)">
+            <i class="bi bi-three-dots-vertical"></i>
+          </button></td>
+        </tr>
+      </tbody>
+    </table>
+  <div *ngIf="borrowers.totalCount">
+      <ycr-pagination [totalCount]="borrowers.totalCount" [numberPage]="pageNumber" [pageSize]="pageSize"
+        (page)="changeNumberPage($event)" (size)="changePageSize($event)"></ycr-pagination>
+    </div>
+</div>
+
+<ng-template #newborrowerModalTemplate>
+  <div class="modal-header ">
+      <h4 class="modal-title float-end">مستعير جديد</h4>
+      <div>
+          <button type="button" class="close btn-close float-start" aria-label="Close" (click)="Cancelled(true)">
+            <span aria-hidden="true" class="visually-hidden">&times;</span>
+          </button>
+      </div>      
+  </div>
+  <div class="modal-body">
+    <div class="mb-3">
+      <label for="name" class="form-label">الاسم</label>
+      <input type="text" class="form-control" id="name" placeholder="الاسم..." [(ngModel)]="newborrowerEditor.name"
+      [ngClass]="{ 'is-invalid': newborrowerEditor.error&&newborrowerEditor.error.name }" (keyup.enter)="addborrower()" />
+    <div *ngIf="newborrowerEditor.error&&newborrowerEditor.error.name" class="invalid-feedback">
+      {{ newborrowerEditor.error.name }}
+    </div>  
+    </div>   
+    <div class="mb-3">
+      <label for="address" class="form-label">العنوان </label>
+      <input type="text" class="form-control" id="address" placeholder="العنوان..." [(ngModel)]="newborrowerEditor.address"
+        [ngClass]="{ 'is-invalid': newborrowerEditor.error&&newborrowerEditor.error.address }" (keyup.enter)="addborrower()" />
+      <div *ngIf="newborrowerEditor.error&&newborrowerEditor.error.address" class="invalid-feedback">
+        {{ newborrowerEditor.error.address }}
+      </div>
+    </div>
+    <div class="mb-3">
+      <label for="phone" class="form-label">التلفون</label>
+      <input type="text" class="form-control" id="phone" placeholder="التلفون.." [(ngModel)]="newborrowerEditor.phone"
+        [ngClass]="{ 'is-invalid': newborrowerEditor.error&&newborrowerEditor.error.phone }" (keyup.enter)="addborrower()" />
+      <div *ngIf="newborrowerEditor.error&&newborrowerEditor.error.phone" class="invalid-feedback">
+        {{ newborrowerEditor.error.phone }}
+      </div>
+    </div>
+    <div *ngIf="debug">
+      <pre>{{ newborrowerEditor | json }}</pre>
+    </div>
+  </div>
+  <div class="modal-footer clearfix">
+    <div class="float-end">
+      <button class="btn btn-primary" (click)="addborrower()">إضافة</button>
+      <button class="btn btn-default" (click)="Cancelled(true)">الغاء</button>
+    </div>
+  </div>
+</ng-template>
+<ng-template #borrowerOptionsModalTemplate>
+  <div class="modal-header">
+    <h4 class="modal-title pull-left">تعديل مستعير</h4>
+    <button type="button" class="close btn-close pull-right" aria-label="Close" (click)="Cancelled(false) ">
+      <span aria-hidden="true" class="visually-hidden">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="mb-3">
+      <label for="inputName" class="form-label">الاسم</label>
+      <input type="text" class="form-control" id="inputName" placeholder="الاسم..."
+        [(ngModel)]="borrowerOptionsEditor.name" 
+        [ngClass]="{ 'is-invalid': borrowerOptionsEditor.error&&borrowerOptionsEditor.error.name }" (keyup.enter)="updateborrowerOptions()" />
+        <div *ngIf="borrowerOptionsEditor.error&&borrowerOptionsEditor.error.name" class="invalid-feedback">
+          {{ borrowerOptionsEditor.error&&borrowerOptionsEditor.error.name }}
+        </div>
+    </div>
+    <div class="mb-3">
+      <label for="inputAddress" class="form-label">العنوان</label>
+      <input type="text" class="form-control" id="inputAddress" placeholder="العنوان.."
+        [(ngModel)]="borrowerOptionsEditor.address" 
+        [ngClass]="{ 'is-invalid': borrowerOptionsEditor.error&&borrowerOptionsEditor.error.address }" (keyup.enter)="updateborrowerOptions()" />
+        <div *ngIf="borrowerOptionsEditor.error&&borrowerOptionsEditor.error.address" class="invalid-feedback">
+          {{ borrowerOptionsEditor.error&&borrowerOptionsEditor.error.address }}
+        </div>
+    </div>
+    <div class="mb-3">
+      <label for="inputphone" class="form-label">التلفون</label>
+      <input type="text" class="form-control" id="inputphone" placeholder="التلفون..."
+        [(ngModel)]="borrowerOptionsEditor.phone" 
+        [ngClass]="{ 'is-invalid': borrowerOptionsEditor.error&&borrowerOptionsEditor.error.phone }" (keyup.enter)="updateborrowerOptions()" />
+        <div *ngIf="borrowerOptionsEditor.error&&borrowerOptionsEditor.error.phone" class="invalid-feedback">
+          {{ borrowerOptionsEditor.error&&borrowerOptionsEditor.error.phone }}
+        </div>
+    </div>
+    <div *ngIf="debug">
+      <pre>{{ borrowerOptionsEditor | json }}</pre>
+    </div>
+  </div>
+  <div class="modal-footer justify-content-between">
+    <div class="float-start">
+      <button class="btn btn-default text-danger" (click)="confirmDeleteborrower(deleteborrowerModalTemplate)">حذف</button>
+    </div> 
+    <div class="clearfix">       
+      <div class="float-end">
+        <button class="btn btn-primary" (click)="updateborrowerOptions()">تعديل</button>
+        <button class="btn btn-default" (click)="Cancelled(false)">الغاء</button>
+      </div>
+           
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #deleteborrowerModalTemplate>
+  <div class="modal-header">
+    <h4 class="modal-title pull-left">حذف "{{ selectedborrower?.name }}" ؟</h4>
+    <button type="button" class="close btn-close pull-right" aria-label="Close" (click)="deleteborrowerModalRef.hide()">
+      <span aria-hidden="true" class="visually-hidden">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <p>سيتم حذف العناصر بشكل دائم. </p>
+    <div *ngIf="debug">
+      <pre>{{ selectedborrower | json }}</pre>
+    </div>
+  </div>
+  <div class="modal-footer clearfix">
+    <div class="float-end">
+      <button type="button" class="btn btn-danger" (click)="deleteborrowerConfirmed()">حذف</button>
+      <button type="button" class="btn btn-default" (click)="deleteborrowerModalRef.hide()">الغاء</button>
+    </div>
+  </div>
+</ng-template>

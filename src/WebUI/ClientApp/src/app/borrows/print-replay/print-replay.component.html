@@ -1,0 +1,37 @@
+<div class="py-5 text-center">      
+    <h2>سند غرامة</h2>
+   <div class="row">
+    <div class="col-3"></div>
+    <div class="col-6">
+        <table class="table" *ngIf="borrow">    
+            <tbody>
+              <tr>
+                <th>اسم الكتاب</th>
+                <td>{{borrow.book}}</td>
+              </tr>
+              <tr>
+                <th>تاريخ الاستعارة</th>
+                <td>{{borrow.created| date:'mediumDate'}}</td>
+              </tr>
+              <tr>
+                <th>تاريخ الإعادة </th>
+                <td>{{borrow.replayDt| date:'mediumDate'}}</td>
+              </tr>      
+              <tr>
+                <th>المدة</th>
+                <td>{{borrow.duration}}</td>
+              </tr>
+              <tr>
+                <th>عدد ايام التاخير </th>
+                <td>{{borrow.dayLate}}</td>
+              </tr>
+              <tr>
+                <th>الغرامة </th>
+                <td>{{borrow.fines}}</td>
+              </tr>
+            </tbody>
+          </table>
+    </div>
+    <div class="col-3"></div>
+   </div>
+  </div>

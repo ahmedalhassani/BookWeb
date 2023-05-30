@@ -1,0 +1,44 @@
+ <!--begin::Tab pane-->
+ <div class="tab-pane " id="tab_permissions" role="tabpanel">
+      <!--begin::Form-->
+     <form class="form" *ngIf="model" (ngSubmit)="submit()">
+        <ng-container *ngFor="let item of model">
+            <div class="form-group d-flex flex-stack">           
+                <!--begin::Heading-->     
+                <div class="d-flex flex-column">
+                    <h4 class="fw-bold text-dark">{{item.name}}</h4>                                                    
+                </div>
+                <!--end::Heading-->                
+                <!--begin::Option-->
+                <div class="d-flex flex-wrap justify-content-center">
+                <div *ngFor="let p of item.permissionDtos;let i=index" class="form-check form-check-custom form-check-solid form-check-success form-switch ms-10 mb-5">
+                    <label class="form-check form-switch form-check-custom form-check-solid">
+                        <input class="form-check-input" type="checkbox" [checked]="p.selected" [(ngModel)]="p.selected" [ngModelOptions]="{standalone: true}" >
+                        <span class="form-check-label fw-semibold text-muted">
+                            {{p.permission}}
+                        </span>
+                    </label>                        
+                    </div>
+                </div>
+                <!--end::Option-->
+            </div>
+            <div class="separator separator-dashed my-6"></div>             
+        </ng-container>
+     
+               <!--begin::Card footer-->
+        <div class="card-footer d-flex justify-content-end py-6 px-9">
+            <button class="btn btn-primary  px-6" type="submit"> 
+                <ng-container *ngIf="this.layoutUtilsService.isLoading | async">
+                    <span class="indicator-progress" [style.display]="'block'">
+                        انتظر من فضلك...
+                        <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+                </span>
+              </ng-container>
+              <ng-container *ngIf="(this.layoutUtilsService.isLoading | async) === false">
+                <span class="indicator-label">حفظ </span>
+            </ng-container></button>        </div>
+        <!--end::Card footer-->
+    </form>
+    <!--end::Form-->
+</div>
+<!--end::Tab pane-->

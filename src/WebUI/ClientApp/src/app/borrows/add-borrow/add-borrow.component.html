@@ -1,0 +1,59 @@
+<div class="modal-header">
+    <h5 class="modal-title">استعارة كتاب</h5>
+    <button type="button" class="btn-close" (click)="close()"></button>
+</div>
+<form #pageForm="ngForm" (ngSubmit)="onSubmit()"
+class="form fv-plugins-bootstrap5 fv-plugins-framework">
+<div class="modal-body">               
+        <div class="alert alert-danger" role="alert" *ngIf="message">{{message}}</div>
+        <div class="col mb-3">
+            <label for="bookId" class="form-label">اسم الكتاب</label>
+            <ng-select [items]="lookupBook" bindLabel="title" bindValue="id"
+            name="bookId" [(ngModel)]="borrowBook.bookId">
+            </ng-select>
+        </div>
+        <div class="row">            
+            <ng-container *ngIf="!isAddBorrower">
+                <div class="col-10 mb-3">
+                    <label for="borrowerId" class="form-label">اسم الستعير</label>
+                    <ng-select [items]="lookupBorrower" bindLabel="title" bindValue="id"
+                    name="borrowerId" [(ngModel)]="borrowBook.borrowerId">
+                    </ng-select>
+                </div>
+                <div class="col-1 mb-3">
+                    <button type="button" class="btn btn-primary" style="margin-top:32px ;" (click)="addBorrower()">
+                        <i class="bi bi-plus"></i> 
+                    </button>
+                </div>
+            </ng-container>
+                
+          <div *ngIf="isAddBorrower">
+            <div class="mb-3">
+                <label for="borrowername" class="form-label">اسم المستعير</label>
+                <input type="text" class="form-control" name="name" placeholder="الاسم..." [(ngModel)]="borrowBook?.borrower.name"/>
+              </div>   
+              <div class="mb-3">
+                <label for="borroweraddress" class="form-label">العنوان </label>
+                <input type="text" class="form-control" name="address" placeholder="العنوان..." [(ngModel)]="borrowBook?.borrower.address"/>
+              </div>
+              <div class="mb-3">
+                <label for="borrowerphone" class="form-label">التلفون</label>
+                <input type="text" class="form-control" name="phone" placeholder="التلفون.." [(ngModel)]="borrowBook?.borrower.phone"/>
+              </div>
+          </div>
+          <div class="col-6 mb-3">
+            <label for="duration" class="form-label">مدة إلاعارة</label>
+            <input type="number" class="form-control" name="duration"
+                [(ngModel)]="borrowBook.duration" />
+        </div>
+        <div class="col-6 mb-3">
+            <label for="price" class="form-label">سعر إلاعارة</label>
+            <input type="number" class="form-control" name="price" [(ngModel)]="borrowBook.price" />
+        </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="submit" class="btn btn-primary" [disabled]="!pageForm.valid">حفظ</button>
+        <button type="button" class="btn btn-danger" (click)="close()">الغاء</button>
+    </div>
+</form>

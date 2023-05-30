@@ -1,0 +1,267 @@
+<div class="clearfix">
+  <h1 class="float-start">الكتب</h1>
+  <button class="btn btn-primary float-end" *ngIf="isAdministrator"
+        (click)="showNewbookModal(newbookModalTemplate)">جديد 
+        <i class="bi bi-journal-plus"></i> 
+      </button>   
+</div>
+
+<p *ngIf="!books"><em>تحميل...</em></p>
+<div *ngIf="books">
+  <div class="card mb-1">
+    <div class="card-body row">
+      <div class="col-md-3">
+        <label for="nameBook" class="form-label">اسم الكتاب</label>
+        <input type="text" class="form-control" name="nameBook" [(ngModel)]="nameBook" placeholder="اسم الكتاب">
+      </div>
+      <div class="col-md-3">
+        <label for="nameBook" class="form-label">التصنيف</label>
+        <ng-select [items]="lookupCategory" 
+        bindLabel="title" 
+        bindValue="id" 
+        [(ngModel)]="categoryId" >
+</ng-select>
+      </div>
+      <div class="col-md-3">
+        <label for="nameBook" class="form-label">المؤلف</label>
+        <ng-select [items]="lookupAuthor" 
+           bindLabel="title" 
+           bindValue="id" 
+           [(ngModel)]="authorId" 
+           >
+</ng-select>
+      </div>
+      <div class="col-2">
+        <label for="publicationDt" class="form-label">تاريخ النشر</label>
+        <input
+        class="form-control form-control-solid"
+        autocomplete="off"
+        #datepickerFull="bsDatepicker"
+        bsDatepicker      
+        [bsConfig]="{ dateInputFormat: 'DD/MM/YYYY' }"
+        [(ngModel)]="publicationDt" 
+        >
+      </div>
+      <div class="col-1">
+        <button  (click)="loadSearch()" style="margin-top: 32px;" class="btn btn-primary">بحث</button>
+      </div>
+    </div>
+  </div>
+ 
+  <table class='table table-striped' aria-labelledby="tableLabel" >
+      <thead>
+        <tr>
+          <th>الاسم</th>
+          <th>التصنيف</th>
+          <th>المؤلف</th>
+          <th>تاريخ النشر</th>
+          <th>عدد الصفحات</th>
+          <th *ngIf="isAuthenticated | async">إستعارة</th>
+          <th *ngIf="isAdministrator"></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let book of books.items">
+          <td>{{ book.name }}</td>
+          <td>{{ book.category }}</td>
+          <td>{{ book.author }}</td>
+          <td>{{ book.publicationDt | date:'mediumDate' }}</td>
+          <td>{{ book.numberPages }}</td>
+          <td *ngIf="isAuthenticated | async"><button  class="btn btn-default float-end" 
+            (click)="showNewBorrowModal(book.id)">
+            <i class="bi bi-journal-plus"></i>
+          </button></td>
+          <td *ngIf="isAdministrator"><button id="bookOptions" class="btn btn-default float-end" 
+            (click)="showbookOptionsModal(book,bookOptionsModalTemplate)">
+            <i class="bi bi-three-dots-vertical"></i>
+          </button></td>
+        </tr>
+      </tbody>
+    </table>
+  <div *ngIf="books.totalCount">
+      <ycr-pagination [totalCount]="books.totalCount" [numberPage]="pageNumber" [pageSize]="pageSize"
+        (page)="changeNumberPage($event)" (size)="changePageSize($event)"></ycr-pagination>
+    </div>
+</div>
+
+<ng-template #newbookModalTemplate>
+  <div class="modal-header ">
+      <h4 class="modal-title float-end">كتاب جديد</h4>
+      <div>
+          <button type="button" class="close btn-close float-start" aria-label="Close" (click)="Cancelled(true)">
+            <span aria-hidden="true" class="visually-hidden">&times;</span>
+          </button>
+      </div>      
+  </div>
+  <div class="modal-body">
+    
+    <div class="mb-3">
+      <label for="name" class="form-label">الاسم</label>
+      <input type="text" class="form-control" id="name" placeholder="الاسم..." [(ngModel)]="newbookEditor.name"
+      [ngClass]="{ 'is-invalid': newbookEditor.error&&newbookEditor.error.name }" (keyup.enter)="addbook()" />
+    <div *ngIf="newbookEditor.error&&newbookEditor.error.name" class="invalid-feedback">
+      {{ newbookEditor.error.name }}
+    </div>  
+    </div>   
+   
+    <div class="mb-3">
+      <label for="numberPages" class="form-label">التصنيف</label>
+      <ng-select [items]="lookupCategory" 
+           bindLabel="title" 
+           bindValue="id" 
+           [(ngModel)]="newbookEditor.categoryId" 
+           [ngClass]="{ 'is-invalid': newbookEditor.error&&newbookEditor.error.categoryId }" (keyup.enter)="addbook()" >
+</ng-select>
+           <div *ngIf="newbookEditor.error&&newbookEditor.error.categoryId" class="invalid-feedback">
+        {{ newbookEditor.error.categoryId }}
+      </div>
+    </div>
+    <div class="mb-3">
+      <label for="authorId" class="form-label">المؤلف</label>
+      <ng-select [items]="lookupAuthor" 
+           bindLabel="title" 
+           bindValue="id" 
+           [(ngModel)]="newbookEditor.authorId" 
+           [ngClass]="{ 'is-invalid': newbookEditor.error&&newbookEditor.error.authorId }" (keyup.enter)="addbook()" >
+</ng-select>
+           <div *ngIf="newbookEditor.error&&newbookEditor.error.authorId" class="invalid-feedback">
+        {{ newbookEditor.error.authorId }}
+      </div>
+    </div>
+    <div class="row">
+      <div class="col">
+        <label for="numberPages" class="form-label">عدد الصفحات </label>
+        <input type="number" class="form-control" id="numberPages" [(ngModel)]="newbookEditor.numberPages"
+          [ngClass]="{ 'is-invalid': newbookEditor.error&&newbookEditor.error.numberPages }" (keyup.enter)="addbook()" />
+        <div *ngIf="newbookEditor.error&&newbookEditor.error.numberPages" class="invalid-feedback">
+          {{ newbookEditor.error.numberPages }}
+        </div>      </div>
+      <div class="col">
+        <label for="publicationDt" class="form-label">تاريخ النشر</label>
+        <input
+        class="form-control form-control-solid"
+        autocomplete="off"
+        placeholder=" تاريخ النشر"
+        #datepickerFull="bsDatepicker"
+        bsDatepicker      
+        [bsConfig]="{ dateInputFormat: 'DD/MM/YYYY' }"
+        [(ngModel)]="newbookEditor.publicationDt" 
+        [ngClass]="{ 'is-invalid': newbookEditor.error&&newbookEditor.error.publicationDt }" (keyup.enter)="addbook()">
+             <div *ngIf="newbookEditor.error&&newbookEditor.error.publicationDt" class="invalid-feedback">
+          {{ newbookEditor.error.publicationDt }}
+        </div>      </div>
+    </div>
+    <div *ngIf="debug">
+      <pre>{{ newbookEditor | json }}</pre>
+    </div>
+  </div>
+  <div class="modal-footer clearfix">
+    <div class="float-end">
+      <button class="btn btn-primary" (click)="addbook()">إضافة</button>
+      <button class="btn btn-default" (click)="Cancelled(true)">الغاء</button>
+    </div>
+  </div>
+</ng-template>
+<ng-template #bookOptionsModalTemplate>
+  <div class="modal-header">
+    <h4 class="modal-title pull-left">تعديل كتاب</h4>
+    <button type="button" class="close btn-close pull-right" aria-label="Close" (click)="Cancelled(false) ">
+      <span aria-hidden="true" class="visually-hidden">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="mb-3">
+      <label for="inputName" class="form-label">الاسم</label>
+      <input type="text" class="form-control" id="inputName" placeholder="الاسم..."
+        [(ngModel)]="bookOptionsEditor.name" 
+        [ngClass]="{ 'is-invalid': bookOptionsEditor.error&&bookOptionsEditor.error.name }" (keyup.enter)="updatebookOptions()" />
+        <div *ngIf="bookOptionsEditor.error&&bookOptionsEditor.error.name" class="invalid-feedback">
+          {{ bookOptionsEditor.error&&bookOptionsEditor.error.name }}
+        </div>
+    </div>
+    
+    <div class="mb-3">
+      <label for="categoryId" class="form-label">التصنيف</label>
+      <ng-select [items]="lookupCategory" 
+           bindLabel="title" 
+           bindValue="id" 
+           [(ngModel)]="bookOptionsEditor.categoryId" 
+           [ngClass]="{ 'is-invalid': bookOptionsEditor.error&&bookOptionsEditor.error.categoryId }" (keyup.enter)="addbook()" >
+</ng-select>
+           <div *ngIf="bookOptionsEditor.error&&bookOptionsEditor.error.categoryId" class="invalid-feedback">
+        {{ bookOptionsEditor.error.categoryId }}
+      </div>
+    </div>
+    <div class="mb-3">
+      <label for="authorId" class="form-label">المؤلف</label>
+      <ng-select [items]="lookupAuthor" 
+           bindLabel="title" 
+           bindValue="id" 
+           [(ngModel)]="bookOptionsEditor.authorId" 
+           [ngClass]="{ 'is-invalid': bookOptionsEditor.error&&bookOptionsEditor.error.authorId }" (keyup.enter)="addbook()" >
+</ng-select>
+           <div *ngIf="bookOptionsEditor.error&&bookOptionsEditor.error.authorId" class="invalid-feedback">
+        {{ bookOptionsEditor.error.authorId }}
+      </div>
+    </div>
+    <div class="row">
+      <div class="col">
+        <label for="numberPages" class="form-label">عدد الصفحات </label>
+        <input type="number" class="form-control" id="numberPages" [(ngModel)]="bookOptionsEditor.numberPages"
+          [ngClass]="{ 'is-invalid': bookOptionsEditor.error&&bookOptionsEditor.error.numberPages }" (keyup.enter)="addbook()" />
+        <div *ngIf="bookOptionsEditor.error&&bookOptionsEditor.error.numberPages" class="invalid-feedback">
+          {{ bookOptionsEditor.error.numberPages }}
+        </div>      </div>
+      <div class="col">
+        <label for="publicationDt" class="form-label">تاريخ النشر</label>
+        <input
+        class="form-control form-control-solid"
+        autocomplete="off"
+        placeholder=" تاريخ النشر"
+        #datepickerFull="bsDatepicker"
+        bsDatepicker      
+        [bsConfig]="{ dateInputFormat: 'DD/MM/YYYY' }"
+        [(ngModel)]="bookOptionsEditor.publicationDt" 
+        [ngClass]="{ 'is-invalid': bookOptionsEditor.error&&bookOptionsEditor.error.publicationDt }" (keyup.enter)="addbook()">
+             <div *ngIf="bookOptionsEditor.error&&bookOptionsEditor.error.publicationDt" class="invalid-feedback">
+          {{ bookOptionsEditor.error.publicationDt }}
+        </div>      </div>
+    </div>
+    <div *ngIf="debug">
+      <pre>{{ bookOptionsEditor | json }}</pre>
+    </div>
+  </div>
+  <div class="modal-footer justify-content-between">
+    <div class="float-start">
+      <button class="btn btn-default text-danger" (click)="confirmDeletebook(deletebookModalTemplate)">حذف</button>
+    </div> 
+    <div class="clearfix">       
+      <div class="float-end">
+        <button class="btn btn-primary" (click)="updatebookOptions()">تعديل</button>
+        <button class="btn btn-default" (click)="Cancelled(false)">الغاء</button>
+      </div>
+           
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #deletebookModalTemplate>
+  <div class="modal-header">
+    <h4 class="modal-title pull-left">حذف "{{ selectedbook?.name }}" ؟</h4>
+    <button type="button" class="close btn-close pull-right" aria-label="Close" (click)="deletebookModalRef.hide()">
+      <span aria-hidden="true" class="visually-hidden">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <p>سيتم حذف العناصر بشكل دائم. </p>
+    <div *ngIf="debug">
+      <pre>{{ selectedbook | json }}</pre>
+    </div>
+  </div>
+  <div class="modal-footer clearfix">
+    <div class="float-end">
+      <button type="button" class="btn btn-danger" (click)="deletebookConfirmed()">حذف</button>
+      <button type="button" class="btn btn-default" (click)="deletebookModalRef.hide()">الغاء</button>
+    </div>
+  </div>
+</ng-template>

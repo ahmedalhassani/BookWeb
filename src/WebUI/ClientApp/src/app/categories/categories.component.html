@@ -1,0 +1,118 @@
+<div class="clearfix">
+    <h1 class="float-start">التصنيفات</h1>
+    <button class="btn btn-primary float-end" 
+          (click)="showNewCategoryModal(newCategoryModalTemplate)">جديد 
+          <i class="bi bi-journal-plus"></i> 
+        </button>   
+  </div>
+
+<p *ngIf="!categories"><em>تحميل...</em></p>
+<div *ngIf="categories">
+    <table class='table table-striped' aria-labelledby="tableLabel" >
+        <thead>
+          <tr>
+            <th>التصنيف</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let category of categories.items">
+            <td>{{ category.name }}</td>
+            <td><button id="categoryOptions" class="btn btn-default float-end" 
+              (click)="showCategoryOptionsModal(category,CategoryOptionsModalTemplate)">
+              <i class="bi bi-three-dots-vertical"></i>
+            </button></td>
+          </tr>
+        </tbody>
+      </table>
+    <div *ngIf="categories.totalCount">
+        <ycr-pagination [totalCount]="categories.totalCount" [numberPage]="pageNumber" [pageSize]="pageSize"
+          (page)="changeNumberPage($event)" (size)="changePageSize($event)"></ycr-pagination>
+      </div>
+</div>
+
+<ng-template #newCategoryModalTemplate>
+    <div class="modal-header ">
+        <h4 class="modal-title float-end">تصنيف جديد</h4>
+        <div>
+            <button type="button" class="close btn-close float-start" aria-label="Close" (click)="Cancelled(true)">
+              <span aria-hidden="true" class="visually-hidden">&times;</span>
+            </button>
+        </div>      
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label for="name">التصنيف</label>
+        <input type="text" class="form-control" id="name" placeholder="تصنيف..." [(ngModel)]="newCategoryEditor.name"
+          [ngClass]="{ 'is-invalid': newCategoryEditor.error }" (keyup.enter)="addCategory()" />
+        <div *ngIf="newCategoryEditor.error" class="invalid-feedback">
+          {{ newCategoryEditor.error }}
+        </div>
+      </div>
+      <div *ngIf="debug">
+        <pre>{{ newCategoryEditor | json }}</pre>
+      </div>
+    </div>
+    <div class="modal-footer clearfix">
+      <div class="float-end">
+        <button class="btn btn-primary" (click)="addCategory()">إضافة</button>
+        <button class="btn btn-default" (click)="Cancelled(true)">الغاء</button>
+      </div>
+    </div>
+  </ng-template>
+  <ng-template #CategoryOptionsModalTemplate>
+    <div class="modal-header">
+      <h4 class="modal-title pull-left">تعديل تصنيف</h4>
+      <button type="button" class="close btn-close pull-right" aria-label="Close" (click)="Cancelled(false) ">
+        <span aria-hidden="true" class="visually-hidden">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label for="inputName">التصنيف</label>
+        <input type="text" class="form-control" id="inputName" placeholder="تصنيف..."
+          [(ngModel)]="categoryOptionsEditor.name" 
+          [ngClass]="{ 'is-invalid': categoryOptionsEditor.error }" (keyup.enter)="updateCategoryOptions()" />
+          <div *ngIf="categoryOptionsEditor.error" class="invalid-feedback">
+            {{ categoryOptionsEditor.error }}
+          </div>
+      </div>
+      <div *ngIf="debug">
+        <pre>{{ categoryOptionsEditor | json }}</pre>
+      </div>
+    </div>
+    <div class="modal-footer justify-content-between">
+      <div class="float-start">
+        <button class="btn btn-default text-danger" (click)="confirmDeleteCategory(deleteCategoryModalTemplate)">حذف</button>
+      </div> 
+      <div class="clearfix">       
+        <div class="float-end">
+          <button class="btn btn-primary" (click)="updateCategoryOptions()">تعديل</button>
+          <button class="btn btn-default" (click)="Cancelled(false)">الغاء</button>
+        </div>
+             
+      </div>
+    </div>
+  </ng-template>
+  
+  <ng-template #deleteCategoryModalTemplate>
+    <div class="modal-header">
+      <h4 class="modal-title pull-left">حذف "{{ selectedCategory?.name }}" ؟</h4>
+      <button type="button" class="close btn-close pull-right" aria-label="Close" (click)="deleteCategoryModalRef.hide()">
+        <span aria-hidden="true" class="visually-hidden">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <p>سيتم حذف العناصر بشكل دائم. </p>
+      <div *ngIf="debug">
+        <pre>{{ selectedCategory | json }}</pre>
+      </div>
+    </div>
+    <div class="modal-footer clearfix">
+      <div class="float-end">
+        <button type="button" class="btn btn-danger" (click)="deleteCategoryConfirmed()">حذف</button>
+        <button type="button" class="btn btn-default" (click)="deleteCategoryModalRef.hide()">الغاء</button>
+      </div>
+    </div>
+  </ng-template>
+  

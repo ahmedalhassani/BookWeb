@@ -1,0 +1,69 @@
+<div class="clearfix">
+    <h1 class="float-start">التنبيهات</h1>
+  </div>  
+  <p *ngIf="!borrows"><em>تحميل...</em></p>
+  <div *ngIf="borrows">
+    <div class="card mb-1">
+      <div class="card-body row">
+        <div class="col-md-4">
+          <label for="bookId" class="form-label">اسم الكتاب</label>
+          <ng-select name="bookId" [items]="lookupBook" 
+          bindLabel="title" 
+          bindValue="id" 
+          [(ngModel)]="bookId" >
+  </ng-select>
+        </div>
+        <div class="col-md-4">
+          <label for="borrowerId" class="form-label">إسم المستعير</label>
+          <ng-select name="borrowerId" [items]="lookupBorrower" 
+          bindLabel="title" 
+          bindValue="id" 
+          [(ngModel)]="borrowerId" >
+  </ng-select>
+        </div>
+        <div class="col-3">
+          <label for="created" class="form-label">تاريخ الاستعارة</label>
+          <input
+          class="form-control form-control-solid" name="created"
+          autocomplete="off"
+          #datepickerFull="bsDatepicker"
+          bsDatepicker      
+          [bsConfig]="{ dateInputFormat: 'DD/MM/YYYY' }"
+          [(ngModel)]="created" 
+          >
+        </div>
+        <div class="col-1">
+          <button  (click)="loadSearch()" style="margin-top: 32px;" class="btn btn-primary">بحث</button>
+        </div>
+      </div>
+    </div>
+   
+    <table class='table table-striped' aria-labelledby="tableLabel" >
+        <thead>
+          <tr>
+            <th>اسم الكتاب</th>
+            <th>اسم المستعير</th>
+            <th>العنوان</th>
+            <th>التلفون</th>
+            <th>تاريخ الستعارة</th>
+            <th>المدة</th>
+            <th>السعر</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let borrow of borrows.items">
+            <td>{{ borrow.book }}</td>
+            <td>{{ borrow.borrower.name }}</td>
+            <td>{{ borrow.borrower.address }}</td>
+            <td>{{ borrow.borrower.phone }}</td>
+            <td>{{ borrow.created | date:'mediumDate' }}</td>
+            <td>{{ borrow.duration }}</td>
+            <td>{{ borrow.price |currency:"EGP":"symbol" }}</td>           
+        </tbody>
+      </table>
+    <div *ngIf="borrows.totalCount">
+        <ycr-pagination [totalCount]="borrows.totalCount" [numberPage]="pageNumber" [pageSize]="pageSize"
+          (page)="changeNumberPage($event)" (size)="changePageSize($event)"></ycr-pagination>
+      </div>
+  </div>
+  

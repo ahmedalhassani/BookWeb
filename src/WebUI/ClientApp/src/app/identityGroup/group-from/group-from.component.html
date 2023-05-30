@@ -1,0 +1,60 @@
+<!--begin::Modal header-->
+<div class="modal-header pb-0 border-0 justify-content-end">
+    <!--begin::Close-->
+    <div class="btn btn-sm btn-icon btn-active-color-primary" (click)="close()">
+        <i class="ki-duotone ki-cross fs-1"><span class="path1"></span><span class="path2"></span></i>
+    </div>
+    <!--end::Close-->
+</div>
+<!--begin::Modal header-->
+
+<!--begin::Modal body-->
+<div class="modal-body scroll-y px-10 px-lg-15 pt-0 pb-15">
+    <!--begin:Form-->
+    <form #pageForm="ngForm" (ngSubmit)="onSubmit()" class="form fv-plugins-bootstrap5 fv-plugins-framework">
+        <!--begin::Heading-->
+        <div class="mb-13 text-center">
+            <!--begin::Title-->
+            <h1 class="mb-3">مجموعة الصلاحيات</h1>
+            <!--end::Title-->
+             <!--begin::Description-->
+        <div class="text-dangerng fw-semibold fs-5" *ngIf="message">{{message}}</div>
+        <!--end::Description-->
+        </div>
+        <!--end::Heading-->       
+        <!--begin::Input group-->
+        <div class="d-flex flex-column mb-8 fv-row fv-plugins-icon-container">
+            <!--begin::Label-->
+            <label class="d-flex align-items-center fs-6 fw-semibold mb-2">
+                <span class="required">الاسم</span>
+                </label>
+            <!--end::Label-->
+            <input type="text" class="form-control form-control-solid" placeholder="الاسم" name="name"
+                [(ngModel)]="identityGroup.name" required>
+            <div class="fv-plugins-message-container invalid-feedback"></div>
+        </div>
+        <!--end::Input group-->
+
+        <!--begin::Actions-->
+        <div class="text-center">
+
+            <button type="submit" class="btn btn-primary me-3" [disabled]="!pageForm.valid">
+                <ng-container *ngIf="this.layoutUtilsService.isLoading | async">
+                    <span class="indicator-progress" [style.display]="'block'">
+                        انتظر من فضلك...
+                        <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+                    </span>
+                </ng-container>
+                <ng-container *ngIf="(this.layoutUtilsService.isLoading | async) === false">
+                    <span class="indicator-label"> حفظ</span>
+                </ng-container>
+            </button>
+            <button type="button" class="btn btn-light " (click)="close()">
+                الغــاء
+            </button>
+        </div>
+        <!--end::Actions-->
+    </form>
+    <!--end:Form-->
+</div>
+<!--end::Modal body-->

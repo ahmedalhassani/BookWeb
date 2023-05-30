@@ -1,0 +1,88 @@
+<header>
+  <nav
+    class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3"
+  >
+    <div class="container">
+      <a class="navbar-brand" [routerLink]="['/']">WebBook</a>
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-toggle="collapse"
+        data-target=".navbar-collapse"
+        aria-label="Toggle navigation"
+        [attr.aria-expanded]="isExpanded"
+        (click)="toggle()"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div
+        class="navbar-collapse collapse d-sm-inline-flex justify-content-between"
+        [ngClass]="{ show: isExpanded }"
+      >
+        <ul class="navbar-nav flex-grow">
+          <li
+            class="nav-item"
+            [routerLinkActive]="['link-active']"
+            [routerLinkActiveOptions]="{ exact: true }"
+          >
+            <a class="nav-link text-dark" [routerLink]="['/']">الرئيسية</a>
+          </li>
+          <li class="nav-item dropdown" [routerLinkActive]="['link-active']" *ngIf="isAdministrator">
+            <a class="nav-link dropdown-toggle text-dark" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              الادوات
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+              <li><a class="dropdown-item" [routerLink]="['/categories']">التصنيفات</a></li>
+              <li><a class="dropdown-item" [routerLink]="['/authors']">المؤلفون</a></li>
+              <li><a class="dropdown-item" [routerLink]="['/borrowers']">المستعيرين</a></li>
+            </ul>
+          </li>         
+          <li class="nav-item" [routerLinkActive]="['link-active']">
+            <a class="nav-link text-dark" [routerLink]="['/books']">الكتب</a>
+          </li>
+          <li class="nav-item" [routerLinkActive]="['link-active']" *ngIf="isAuthenticated | async">
+            <a class="nav-link text-dark" [routerLink]="['/borrows']">الاستعارة </a>
+          </li>
+          <li class="nav-item" [routerLinkActive]="['link-active']" *ngIf="isAuthenticated | async">
+            <a class="nav-link text-dark" [routerLink]="['/replayborrows']">المعادة</a>
+          </li>
+          <li class="nav-item" [routerLinkActive]="['link-active']" *ngIf="isAuthenticated | async">
+            <a class="nav-link text-dark" [routerLink]="['/nearexpiry']">التنبيهات</a>
+          </li>
+<!-- 
+          <li class="nav-item" [routerLinkActive]="['link-active']">
+            <a class="nav-link text-dark" [routerLink]="['/counter']">Counter</a>
+          </li>
+          <li class="nav-item" [routerLinkActive]="['link-active']">
+            <a class="nav-link text-dark" [routerLink]="['/fetch-data']">Fetch data</a>
+          </li>
+          <li class="nav-item" [routerLinkActive]="['link-active']">
+            <a class="nav-link text-dark" [routerLink]="['/todo']">Todo</a>
+          </li>
+          <li class="nav-item" [routerLinkActive]="['link-active']">
+            <a class="nav-link text-dark" [routerLink]="['/token']">JWT</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-dark" href="/api" target="_blank">API</a>
+          </li> -->
+        </ul>
+        <ul class="navbar-nav" *ngIf="isAuthenticated | async">
+          <li class="nav-item">
+            <a class="nav-link text-dark" [routerLink]='["/authentication/profile"]' title="Manage">مرحبًا {{ userName | async }}</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-dark" [routerLink]='["/authentication/logout"]' [state]='{ local: true }' title="Logout">تسجيل خروج</a>
+          </li>
+      </ul>
+      <ul class="navbar-nav" *ngIf="(isAuthenticated | async) !== true">
+        <!--<li class="nav-item">
+              <a class="nav-link text-dark" [routerLink]='["/authentication/register"]'>Register</a>
+          </li>-->
+        <li class="nav-item">
+          <a class="nav-link text-dark" [routerLink]='["/authentication/login"]'>تسجيل الدخول</a>
+        </li>
+      </ul>
+      </div>
+    </div>
+  </nav>
+</header>
