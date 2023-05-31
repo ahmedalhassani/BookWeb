@@ -50,8 +50,13 @@ export class AddBorrowComponent implements OnInit {
       },
       error => {
         const res = JSON.parse(error.response);
-        if (res && res.errors) {         
-          this.message = res.errors.toString();
+        if (res && res.errors) {  
+          if(res.errors.BookId)
+          this.message +=" - "+ res.errors.BookId;
+          if(res.errors.Duration)
+          this.message +=" - "+ res.errors.Duration;
+          if(res.errors.Price)
+          this.message +=" - "+ res.errors.Price;
         }     
      }
     );

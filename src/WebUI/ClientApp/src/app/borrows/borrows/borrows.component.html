@@ -1,5 +1,5 @@
 <div class="clearfix">
-  <h1 class="float-start">الاستعارة</h1>
+  <h1 class="float-start">الاستعارت</h1>
   <button class="btn btn-primary float-end"
         (click)="showNewBorrowModal()">إستعارة 
         <i class="bi bi-journal-plus"></i> 
@@ -19,7 +19,7 @@
 </ng-select>
       </div>
       <div class="col-md-4">
-        <label for="borrowerId" class="form-label">إسم المستعير</label>
+        <label for="borrowerId" class="form-label">اسم المستعير</label>
         <ng-select name="borrowerId" [items]="lookupBorrower" 
         bindLabel="title" 
         bindValue="id" 
@@ -27,7 +27,7 @@
 </ng-select>
       </div>
       <div class="col-3">
-        <label for="created" class="form-label">تاريخ الاستعارة</label>
+        <label for="created" class="form-label">تاريخ الإستعارة</label>
         <input
         class="form-control form-control-solid" name="created"
         autocomplete="off"
@@ -58,7 +58,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let borrow of borrows.items">
+        <tr *ngFor="let borrow of borrows.items" [style.background]="borrow.isLate?'#ff8a65':borrow.isNearExpiry?'#f5d8d8':''">
           <td>{{ borrow.book }}</td>
           <td>{{ borrow.borrower.name }}</td>
           <td>{{ borrow.borrower.address }}</td>
@@ -73,7 +73,7 @@
           </button>
         </td>
           <td><button id="bookOptions" class="btn btn-default float-end" 
-            (click)="showborrowOptionsModal(borrow,replayBorrowModalTemplate)">
+            (click)="showborrowOptionsModal(borrow,borrowOptionsModalTemplate)">
             <i class="bi bi-three-dots-vertical"></i>
           </button></td>
         </tr>

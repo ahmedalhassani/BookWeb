@@ -14,7 +14,7 @@ public class BorrowDto : IMapFrom<Borrow>
     public DateTime? ReplayDt { get; set; }
     public int Duration { get; set; }
     public double Price { get; set; }
-    public bool IsLate => ReplayDt == null &&  DateTime.UtcNow > DateTime.UtcNow.AddDays(Duration);
+    public bool IsLate => ReplayDt == null &&  DateTime.UtcNow > Created.AddDays(Duration);
     public bool IsNearExpiry => ReplayDt == null && DateTime.UtcNow <= Created.AddDays(Duration) && DateTime.UtcNow.AddDays(2) >= Created.AddDays(Duration);
     public bool Finished => ReplayDt != null;
     public int DayLate => ReplayDt != null? DaysLate(Created.AddDays(Duration), ReplayDt.Value):0;

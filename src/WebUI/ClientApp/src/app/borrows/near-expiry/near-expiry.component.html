@@ -1,5 +1,5 @@
 <div class="clearfix">
-    <h1 class="float-start">التنبيهات</h1>
+    <h1 class="float-start">الاستعارت قريب الإعادة</h1>
   </div>  
   <p *ngIf="!borrows"><em>تحميل...</em></p>
   <div *ngIf="borrows">
@@ -14,7 +14,7 @@
   </ng-select>
         </div>
         <div class="col-md-4">
-          <label for="borrowerId" class="form-label">إسم المستعير</label>
+          <label for="borrowerId" class="form-label">اسم المستعير</label>
           <ng-select name="borrowerId" [items]="lookupBorrower" 
           bindLabel="title" 
           bindValue="id" 
@@ -22,7 +22,7 @@
   </ng-select>
         </div>
         <div class="col-3">
-          <label for="created" class="form-label">تاريخ الاستعارة</label>
+          <label for="created" class="form-label">تاريخ الإستعارة</label>
           <input
           class="form-control form-control-solid" name="created"
           autocomplete="off"

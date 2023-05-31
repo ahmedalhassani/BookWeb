@@ -51,6 +51,12 @@ export const routes: Routes = [
       canActivate: [AuthorizeGuard]  
   },  
   {
+    path: 'late',   
+    loadComponent: () =>
+     import('./borrows/late/late.component').then(mod => mod.LateComponent),
+      canActivate: [AuthorizeGuard]  
+  },  
+  {
     path: 'printreplay/:id',   
     loadComponent: () =>
      import('./borrows/print-replay/print-replay.component').then(mod => mod.PrintReplayComponent),

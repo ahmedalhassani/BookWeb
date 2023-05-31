@@ -1,12 +1,11 @@
 <div class="clearfix">
-    <h1 class="float-start">الاستلامات</h1>      
-  </div>
-  
+    <h1 class="float-start">الاستعارت المتاخره</h1>
+  </div>  
   <p *ngIf="!borrows"><em>تحميل...</em></p>
   <div *ngIf="borrows">
     <div class="card mb-1">
       <div class="card-body row">
-        <div class="col-md-3">
+        <div class="col-md-4">
           <label for="bookId" class="form-label">اسم الكتاب</label>
           <ng-select name="bookId" [items]="lookupBook" 
           bindLabel="title" 
@@ -14,7 +13,7 @@
           [(ngModel)]="bookId" >
   </ng-select>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-4">
           <label for="borrowerId" class="form-label">اسم المستعير</label>
           <ng-select name="borrowerId" [items]="lookupBorrower" 
           bindLabel="title" 
@@ -22,7 +21,7 @@
           [(ngModel)]="borrowerId" >
   </ng-select>
         </div>
-        <div class="col-2">
+        <div class="col-3">
           <label for="created" class="form-label">تاريخ الإستعارة</label>
           <input
           class="form-control form-control-solid" name="created"
@@ -31,17 +30,6 @@
           bsDatepicker      
           [bsConfig]="{ dateInputFormat: 'DD/MM/YYYY' }"
           [(ngModel)]="created" 
-          >
-        </div>
-        <div class="col-3">
-          <label for="replayDt" class="form-label">تاريخ الإعادة</label>
-          <input
-          class="form-control form-control-solid" name="replayDt"
-          autocomplete="off"
-          #datepickerFull="bsDatepicker"
-          bsDatepicker      
-          [bsConfig]="{ dateInputFormat: 'DD/MM/YYYY' }"
-          [(ngModel)]="replayDt" 
           >
         </div>
         <div class="col-1">
@@ -57,12 +45,9 @@
             <th>اسم المستعير</th>
             <th>العنوان</th>
             <th>التلفون</th>
-            <th>المدة</th>
             <th>تاريخ الإستعارة</th>
-            <th>تاريخ الإعادة</th>
-            <th>مدة التإخر</th>
-            <th>غرامات</th>
-            <th></th>
+            <th>المدة</th>
+            <th>السعر</th>
           </tr>
         </thead>
         <tbody>
@@ -71,17 +56,9 @@
             <td>{{ borrow.borrower.name }}</td>
             <td>{{ borrow.borrower.address }}</td>
             <td>{{ borrow.borrower.phone }}</td>
-            <td>{{ borrow.duration }}</td>
             <td>{{ borrow.created | date:'mediumDate' }}</td>
-            <td>{{ borrow.replayDt | date:'mediumDate' }}</td>
-            <td>{{ borrow.dayLate }}</td>
-            <td>{{ borrow.fines |currency:"EGP":"symbol" }}</td>
-            <td>
-              <button  class="btn btn-primary float-end" routerLink="/printreplay/{{ borrow.id }}">
-              <i class="bi bi-credit-card"></i>
-            </button>
-          </td>           
-          </tr>
+            <td>{{ borrow.duration }}</td>
+            <td>{{ borrow.price |currency:"EGP":"symbol" }}</td>           
         </tbody>
       </table>
     <div *ngIf="borrows.totalCount">
